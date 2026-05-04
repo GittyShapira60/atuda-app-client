@@ -1,0 +1,3 @@
+const imageUrl = "https://s3-alpha-sig.figma.com/img/5db8/0114/a0e2394870900bc3dbe725b19a1e06d8?Expires=1731283200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=CqSIUqE4e4DeUBADe210QZIwl-KAkI1VGB2j4KGmck1IZp8t-oh4nTEkYW3kW0~18NTuYE27apUwjrBCyzQsRo95kXJFjs5800fJquxfe~u~FGivEwq1JeSkr-XS~qh7YMzOh2bvDhkxJ37IxB82-BP843WhtJM2MvK-7ZpVFDAYidfNsH5EZvxh-NB1zU~RXNOcrHYMtbV0TRIxtfnsn08RxS-uMFTHesdIPdtI6O2PHwO6Mu6h2~dWwSz6Vej9fhMiB6qu~a6HxWCaXFhK7T70tCo2m-nB6Ulq~9P9jF142uabJQGPZsdUWN82AOWLNTLOWa5ReD7g03LhMSHDsg__";
+
+export default imageUrl;

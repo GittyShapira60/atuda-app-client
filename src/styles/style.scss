@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew&display=swap');
+
+$font: 'Noto Sans Hebrew', sans-serif !important;
+
+.v-application__wrap {
+  max-height: 100vh;
+  overflow: hidden !important;
+}
+
+.v-application {
+  font-size: 3.738vw !important;
+}
+
+.v-main {
+  padding: 14.953vw 0 !important;
+}
+
+.v-application,
+.v-btn__content,
+.v-list,
+.v-tooltip>.v-overlay__content,
+.v-dialog > .v-overlay__content > .v-card, .v-dialog > .v-overlay__content > form > .v-card,
+.text-caption {
+  font-family: $font;
+}
+
+.v-app-bar.v-toolbar:not(.v-toolbar--flat) {
+  border-bottom: 0.234vw solid rgb(var(--v-theme-Special-White));
+  box-shadow: 0px 6px 12px 0px rgb(var(--v-theme-Specific-White));
+}
+.v-toolbar__content{
+height: 14.019vw !important;
+}
+.v-card.classic-card {
+    border-radius: 12px !important;
+    box-shadow: var(--v-box-shadow) !important;
+  
+    .v-card-title {
+      font-size: 3.271vw !important;
+      font-weight: 600 !important;
+      width:95%;
+      overflow-x: auto;
+      text-overflow: clip !important;
+      white-space: nowrap;
+    }
+  
+    .v-card-item {
+      padding: 4.673vw !important;
+    }
+  }
+
+.error-message {
+  color: rgb(var(--v-theme-Comment-text)) !important;
+  font-size: 3.037vw !important;
+  margin-left: auto;
+}
+
+.v-field {
+  font-size: 3.738vw !important;
+}

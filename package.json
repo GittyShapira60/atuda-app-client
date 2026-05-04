@@ -1,0 +1,52 @@
+{
+  "name": "vuetify-project",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "jest --passWithNoTests",
+    "format": "prettier --write \"**/*.{vue,ts}\"",
+    "format:check": "prettier \"**/*.{vue,ts}\" --check"
+  },
+  "dependencies": {
+    "@azure/msal-browser": "^3.23.0",
+    "@koumoul/vjsf": "^3.0.0-beta.32",
+    "@koumoul/vjsf-markdown": "^0.2.1",
+    "@mdi/font": "^6.2.95",
+    "ajv": "^8.17.1",
+    "axios": "^1.8.2",
+    "dayjs": "^1.11.18",
+    "file-type": "^20.1.0",
+    "fs": "^0.0.1-security",
+    "jewish-date": "^2.0.20",
+    "mime": "^4.0.7",
+    "mime-types": "^3.0.1",
+    "roboto-fontface": "*",
+    "vue": "^3.4.21",
+    "vue-router": "^4.4.3",
+    "vue3-signature-pad": "^1.0.7",
+    "vuetify-project": "file:",
+    "vuex": "^4.1.0",
+    "walker": "^1.0.8"
+  },
+  "devDependencies": {
+    "@babel/types": "^7.24.0",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.25",
+    "@typescript-eslint/eslint-plugin": "7.17.0",
+    "@typescript-eslint/parser": "7.17.0",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@vue/eslint-config-prettier": "9.0.0",
+    "eslint": "8.57.0",
+    "eslint-plugin-vue": "9.27.0",
+    "jest": "^29.7.0",
+    "prettier": "3.3.3",
+    "prettier-plugin-organize-imports": "^4.0.0",
+    "sass": "^1.71.1",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.4.2",
+    "unplugin-fonts": "^1.1.1",
+    "unplugin-vue-components": "^0.26.0"
+  }
+}

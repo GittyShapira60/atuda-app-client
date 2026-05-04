@@ -1,0 +1,12 @@
+{
+    "name": "Client",
+    "image": "node:20.15",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/app,type=bind",
+    "workspaceFolder": "/app",
+    "forwardPorts": [8081],
+    "customizations": {
+        "vscode": {
+            "extensions": ["streetsidesoftware.code-spell-checker","wscats.vue"]
+        }
+    }
+}
