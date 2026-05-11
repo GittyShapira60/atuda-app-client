@@ -281,6 +281,7 @@ const saveDataInDB = async () => {
 
   dataRequest['signature'] = signatureData.value
 
+  console.log('DATA REQUEST:', dataRequest)
   await fetchData('requests/create', {
     requestTypeId: props.id,
     requestDetails: Object.assign({}, dataRequest),
