@@ -1,11 +1,11 @@
 <template>
   <v-card class="classic-card append" v-slot:append>
     <div class="close-card">
-      <div class="title-row">
-        <v-card-title class="card-title" @click="show = !show">
-          {{ request.requestType }}
-        </v-card-title>
+      <v-card-title class="card-title" @click="show = !show">
+        {{ request.requestType }}
+      </v-card-title>
 
+      <div class="actions-row">
         <v-btn
           v-if="show"
           round
@@ -19,10 +19,7 @@
           <UploadIcon class="icon-upload" />
           צרוף קובץ
         </v-btn>
-      </div>
-
-      <div class="icons" @click="show = !show">
-        <v-icon>
+        <v-icon @click="show = !show">
           {{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
         </v-icon>
       </div>
@@ -143,7 +140,7 @@
                     </p>
                     <p
                       class="text-decoration-underline view opacity-80"
-                      @click.stop="deleteSavedSupplemental(saved)"
+                      @click.stop="confirmDelete(saved)"
                     >
                       מחיקה
                     </p>
@@ -159,7 +156,7 @@
             </v-expand-transition>
           </div>
 
-          <!-- קבצים חדשים (לפני שמירה) —  -->
+          <!-- קבצים חדשים (לפני שמירה) -->
           <div v-if="newFiles.length > 0" class="box-shadow round file-wrap">
             <div class="box-shadow d-flex mx-auto justify-space-between pb-0">
               <div
@@ -252,6 +249,16 @@
       @close-popup="uploadFeedbackDialog = false"
     />
   </div>
+
+  <Popup
+    v-if="confirmDeleteDialog"
+    v-model="confirmDeleteDialog"
+    title=""
+    :content="`בלחיצה על אישור הקובץ ${pendingDeleteFile?.value?.name ?? ''} ימחק`"
+    btnText="אישור"
+    :move="true"
+    @close-popup="handleDeleteConfirm"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -292,6 +299,8 @@ const fileError = ref('')
 const uploadFeedbackDialog = ref(false)
 const uploadFeedbackContent = ref('')
 const uploadFeedbackIcon = ref('')
+const confirmDeleteDialog = ref(false)
+const pendingDeleteFile = ref<SavedSupplementalFile | null>(null)
 
 const uploadSuccessIcon = new URL('@/assets/ok-icon.svg', import.meta.url).href
 const uploadFailIcon = new URL('@/assets/error.png', import.meta.url).href
@@ -619,6 +628,19 @@ const deleteSavedSupplemental = async (saved: SavedSupplementalFile) => {
   }
 }
 
+const confirmDelete = (saved: SavedSupplementalFile) => {
+  pendingDeleteFile.value = saved
+  confirmDeleteDialog.value = true
+}
+
+const handleDeleteConfirm = async (confirmed: boolean) => {
+  confirmDeleteDialog.value = false
+  if (confirmed && pendingDeleteFile.value) {
+    await deleteSavedSupplemental(pendingDeleteFile.value)
+  }
+  pendingDeleteFile.value = null
+}
+
 onMounted(async () => {
   const details = props.request.requestDetails || []
   syncSupplementalFromDetails(details)
@@ -630,6 +652,13 @@ onMounted(async () => {
 .append {
   display: flex;
   flex-direction: column !important;
+
+  .card-title {
+    flex: 1 !important;
+    width: auto !important;
+    white-space: normal !important;
+    overflow: visible !important;
+  }
 
   .close-card {
     width: 100%;
@@ -667,10 +696,11 @@ onMounted(async () => {
   }
 }
 
-.title-row {
+.actions-row {
   display: flex;
   align-items: center;
   gap: 2vw;
+  flex-shrink: 0;
 }
 
 .file {
@@ -716,7 +746,6 @@ onMounted(async () => {
   font-weight: 400;
   line-height: 4.673vw;
   height: 8.645vw !important;
-  margin-right: 5vw;
 }
 
 .icon-upload {
