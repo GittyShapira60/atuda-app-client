@@ -34,6 +34,26 @@ const actions = {
       ErrorExecutingRequest(commit, 'requestId cannot be empty')
     }
   },
+  async deleteFile(
+    { commit }: { commit: (type: string, payload: any) => void },
+    payload: { requestId: string; detailId?: number },
+  ) {
+    const { requestId, detailId } = payload || ({} as any)
+    if (!requestId) return ErrorExecutingRequest(commit, 'requestId is missing')
+    if (!detailId ) {
+      return ErrorExecutingRequest(commit, 'detailId  is required')
+    }
+    await performRequest(
+      commit,
+      () =>
+        apiService.post(`${path}/${requestId}/delete`, {
+          detailId,
+        } as any),
+      'setResponse',
+      'Deleting file was successful',
+      'Deleting file was rejected!',
+    )
+  },
 }
 
 const mutations = {

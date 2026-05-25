@@ -32,7 +32,24 @@ const actions = {
       )
     } else ErrorExecutingRequest(commit, 'Data cannot be empty')
   },
+  async addFiles(
+    { commit }: { commit: (type: string, payload: any) => void },
+    payload: { requestId: string; requestDetails: any },
+  ) {
+    const { requestId, requestDetails } = payload || ({} as any)
+    if (!requestId) return ErrorExecutingRequest(commit, 'requestId is missing')
+    if (!requestDetails)
+      return ErrorExecutingRequest(commit, 'requestDetails is missing')
 
+    await performRequest(
+      commit,
+      () => apiService.post(`${path}/${requestId}/files`, requestDetails),
+      'setResponse',
+      'Uploading files was successful',
+      'Uploading files was rejected!',
+    )
+  },
+  
   async get({ commit }: { commit: (type: string, payload: any) => void }) {
     await performRequest(
       commit,
