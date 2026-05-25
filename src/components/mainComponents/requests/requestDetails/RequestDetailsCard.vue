@@ -608,7 +608,7 @@ const deleteSavedSupplemental = async (saved: SavedSupplementalFile) => {
     loading.value = true
     fileError.value = ''
 
-    await store.dispatch('requestDetails/deleteFile', {
+    await store.dispatch('requests/deleteFile', {
       requestId: props.request.id,
       detailId: saved.detailId,
     })
