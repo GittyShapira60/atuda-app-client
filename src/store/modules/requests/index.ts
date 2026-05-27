@@ -32,7 +32,43 @@ const actions = {
       )
     } else ErrorExecutingRequest(commit, 'Data cannot be empty')
   },
+  async addFiles(
+    { commit }: { commit: (type: string, payload: any) => void },
+    payload: { requestId: string; requestDetails: any },
+  ) {
+    const { requestId, requestDetails } = payload || ({} as any)
+    if (!requestId) return ErrorExecutingRequest(commit, 'requestId is missing')
+    if (!requestDetails)
+      return ErrorExecutingRequest(commit, 'requestDetails is missing')
 
+    await performRequest(
+      commit,
+      () => apiService.post(`${path}/${requestId}/add-files`, requestDetails),
+      'setResponse',
+      'Uploading files was successful',
+      'Uploading files was rejected!',
+    )
+  },
+  async deleteFile(
+    { commit }: { commit: (type: string, payload: any) => void },
+    payload: { requestId: string; detailId?: number },
+  ) {
+    const { requestId, detailId } = payload || ({} as any)
+    if (!requestId) return ErrorExecutingRequest(commit, 'requestId is missing')
+    if (!detailId ) {
+      return ErrorExecutingRequest(commit, 'detailId  is required')
+    }
+    await performRequest(
+      commit,
+      () =>
+        apiService.post(`${path}/${requestId}/delete-file`, {
+          detailId,
+        } as any),
+      'setResponse',
+      'Deleting file was successful',
+      'Deleting file was rejected!',
+    )
+  },
   async get({ commit }: { commit: (type: string, payload: any) => void }) {
     await performRequest(
       commit,

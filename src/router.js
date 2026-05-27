@@ -24,12 +24,12 @@ router.onError((error) => {
     errorState.value = status
 });
 
-router.beforeEach(async (to, from, next) => {
-    const success = await validateAuth()
-    if (success) {
-        next()
-    } else next({ name: 'NotFound' })
-})
+// router.beforeEach(async (to, from, next) => {
+//     const success = await validateAuth()
+//     if (success) {
+//         next()
+//     } else next({ name: 'NotFound' })
+// })
 
 
 export default router
