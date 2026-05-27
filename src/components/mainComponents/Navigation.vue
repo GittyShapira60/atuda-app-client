@@ -1,28 +1,28 @@
 <template>
-  <v-overlay
+  <!-- <v-overlay
     v-model="drawer"
     opacity="0.5"
     class="overlay position-absolute"
     z-index="1999"
     attach="true"
-  />
+  /> -->
   <v-card class="position-relative z-index">
     <v-app-bar class="app-bar">
       <v-row class="atuda-icon">
         <AtudaApp />
       </v-row>
-      <v-btn
+      <!-- <v-btn
         icon
         @click.stop="drawer = !drawer"
         position="absolute"
         class="nav-position"
       >
         <NavIcon />
-      </v-btn>
+      </v-btn> -->
     </v-app-bar>
   </v-card>
 
-  <v-navigation-drawer
+  <!-- <v-navigation-drawer
     v-model="drawer"
     temporary
     location="right"
@@ -56,7 +56,7 @@
         }}</v-list-item-title>
       </v-list-item>
     </v-list>
-  </v-navigation-drawer>
+  </v-navigation-drawer> -->
 
   <v-main>
     <RouterView />
