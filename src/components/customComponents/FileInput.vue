@@ -41,12 +41,12 @@
           class="btn-upload"
         >
           <UploadIcon class="icon-upload" />
-          צרף קובץ
+          צרוף קובץ
         </v-btn>
         <div v-else class="d-flex align-center">
           <div class="icon-file" v-if="showFileIcon()">
             <v-icon icon="$file" @click="uploadFile()" />
-          </div>
+          </div>ד
           <div class="icon-ok">
             <OkIcon />
           </div>

@@ -728,8 +728,21 @@ onMounted(async () => {
   border-radius: 2.8vw;
 }
 
-.req-details {
-  margin-top: -5.14vw !important;
+.req-view-button .file-name {
+  font-size: 3.271vw;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow-x: auto !important;
+  text-overflow: clip !important;
+  width: 42%;
+  min-width: 0;
+  max-width: 42%;
+  display: block;
+  box-sizing: border-box;
+}
+
+.req-view-button .details {
+  margin-top: -5.14vw;
   padding-bottom: 0.935vw;
 }
 
