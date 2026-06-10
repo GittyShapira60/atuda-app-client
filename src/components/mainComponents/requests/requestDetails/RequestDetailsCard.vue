@@ -1,7 +1,7 @@
 <template>
   <v-card class="classic-card append" v-slot:append>
     <div class="close-card">
-      <v-card-title class="card-title" @click="show = !show">
+      <v-card-title class="card-title" @click="toggleShow">
         {{ request.requestType }}
       </v-card-title>
 
@@ -17,9 +17,9 @@
           @click.stop="uploadFile"
         >
           <UploadIcon class="icon-upload" />
-          צרוף קובץ
+          צירוף קובץ
         </v-btn>
-        <v-icon @click="show = !show">
+        <v-icon @click="toggleShow">
           {{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
         </v-icon>
       </div>
@@ -87,7 +87,7 @@
                         class="text-decoration-underline view opacity-80"
                         @click="viewBase64File(file.value)"
                       >
-                        צפיה
+                        צפייה
                       </p>
                       <p
                         class="text-decoration-underline view opacity-80"
@@ -148,7 +148,7 @@
                       class="text-decoration-underline view opacity-80"
                       @click.stop="viewBase64File(saved.value)"
                     >
-                      צפיה
+                      צפייה
                     </p>
                   </div>
                 </div>
@@ -157,7 +157,11 @@
           </div>
 
           <!-- קבצים חדשים (לפני שמירה) -->
-          <div v-if="newFiles.length > 0" class="box-shadow round file-wrap">
+          <div
+            v-if="newFiles.length > 0"
+            ref="newFilesSection"
+            class="box-shadow round file-wrap"
+          >
             <div class="box-shadow d-flex mx-auto justify-space-between pb-0">
               <div
                 class="file mt-2 mx-auto pa-2 font-weight-bold d-flex justify-space-between align-center"
@@ -179,12 +183,7 @@
                     {{ file.name.replace(/\.[^/.]+$/, '') }}
                   </p>
                   <div class="d-flex justify-end details">
-                    <p
-                      class="text-decoration-underline view opacity-80"
-                      @click.stop="viewFile(file)"
-                    >
-                      צפיה
-                    </p>
+                    
                     <p
                       class="text-decoration-underline view opacity-80"
                       @click.stop="downloadFile(file)"
@@ -196,6 +195,12 @@
                       @click.stop="removeFile(index)"
                     >
                       מחיקה
+                    </p>
+                    <p
+                      class="text-decoration-underline view opacity-80"
+                      @click.stop="viewFile(file)"
+                    >
+                      צפייה
                     </p>
                   </div>
                 </div>
@@ -266,7 +271,7 @@ import { RequestReason } from '@/enums/RequestReason'
 import { RequestDetail, RequestDetails } from '@/interfaces/RequestDetails'
 import mime from 'mime'
 import { fileTypeFromBuffer } from 'file-type'
-import { onMounted, ref } from 'vue'
+import { inject, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 
 const SUPPLEMENTAL_FILES_FIELD = 'supplementalFiles'
@@ -301,6 +306,49 @@ const uploadFeedbackContent = ref('')
 const uploadFeedbackIcon = ref('')
 const confirmDeleteDialog = ref(false)
 const pendingDeleteFile = ref<SavedSupplementalFile | null>(null)
+const newFilesSection = ref<HTMLElement | null>(null)
+const guard = inject<{
+  register: (handler: {
+    requestId: string | number
+    save: () => Promise<boolean>
+    discard: () => void
+  }) => void
+  unregister: (requestId: string | number) => void
+  hasOtherUnsaved: (requestId: string | number) => boolean
+  confirmLeave: (action?: () => void) => Promise<boolean>
+} | null>('requestDetailsGuard', null)
+
+const discardUnsaved = () => {
+  newFiles.value = []
+  showNewFiles.value = false
+  fileError.value = ''
+}
+
+const toggleShow = async () => {
+  if (!guard) {
+    show.value = !show.value
+    return
+  }
+
+  const leavingWithUnsaved = show.value && newFiles.value.length > 0
+  const openingWhileOtherUnsaved =
+    !show.value && guard.hasOtherUnsaved(props.request.id)
+
+  if (leavingWithUnsaved || openingWhileOtherUnsaved) {
+    await guard.confirmLeave(() => {
+      show.value = !show.value
+    })
+    return
+  }
+
+  show.value = !show.value
+}
+
+const scrollToNewFiles = () => {
+  nextTick(() => {
+    newFilesSection.value?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+  })
+}
 
 const uploadSuccessIcon = new URL('@/assets/ok-icon.svg', import.meta.url).href
 const uploadFailIcon = new URL('@/assets/error.png', import.meta.url).href
@@ -459,6 +507,7 @@ const uploadFile = async () => {
     if (validFiles.length > 0) {
       newFiles.value.push(...validFiles)
       showNewFiles.value = true
+      scrollToNewFiles()
     }
   }
 
@@ -560,8 +609,8 @@ const convertFileToBase64 = async (files: File[]) => {
   return Promise.all(promises)
 }
 
-const saveChanges = async () => {
-  if (!newFiles.value.length || loading.value) return
+const saveChanges = async (): Promise<boolean> => {
+  if (!newFiles.value.length || loading.value) return false
 
   try {
     loading.value = true
@@ -581,21 +630,23 @@ const saveChanges = async () => {
 
     if (store.state.requests.error) {
       showFeedback('העלאה נכשלה', false)
-      return
+      return false
     }
 
     const ok = await refreshDetails()
     if (!ok) {
       showFeedback('העלאה נכשלה', false)
-      return
+      return false
     }
 
     newFiles.value = []
     showNewFiles.value = false
     showFeedback('הקבצים נוספו בהצלחה', true)
+    return true
   } catch (error) {
     console.error(error)
     showFeedback('העלאה נכשלה', false)
+    return false
   } finally {
     loading.value = false
   }
@@ -641,10 +692,30 @@ const handleDeleteConfirm = async (confirmed: boolean) => {
   pendingDeleteFile.value = null
 }
 
+watch(
+  () => newFiles.value.length,
+  (length) => {
+    if (!guard) return
+    if (length > 0) {
+      guard.register({
+        requestId: props.request.id,
+        save: saveChanges,
+        discard: discardUnsaved,
+      })
+    } else {
+      guard.unregister(props.request.id)
+    }
+  },
+)
+
 onMounted(async () => {
   const details = props.request.requestDetails || []
   syncSupplementalFromDetails(details)
   await initReqFromDetails(details)
+})
+
+onUnmounted(() => {
+  guard?.unregister(props.request.id)
 })
 </script>
 
