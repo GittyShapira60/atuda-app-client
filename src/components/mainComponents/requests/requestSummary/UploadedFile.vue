@@ -34,7 +34,7 @@
           <p
             class="text-decoration-underline view opacity-80"
             @click="viewFile(file)"
-            v-text="'צפיה'"
+            v-text="'צפייה'"
           />
         </div>
       </div>

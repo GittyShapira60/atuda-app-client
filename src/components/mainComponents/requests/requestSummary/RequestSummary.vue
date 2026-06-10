@@ -26,7 +26,7 @@
         <span class="font-weight-bold"> {{ stage.title }}:&nbsp;</span>
         <span v-if="!stage.view">{{ stage.data }}</span>
         <span class="display-dialog" @click="openStage = key" v-if="stage.view"
-          >צפיה</span
+          >צפייה</span
         >
         <Popup
           v-if="stage.view && openStage === key"

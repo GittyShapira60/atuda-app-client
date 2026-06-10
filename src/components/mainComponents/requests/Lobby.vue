@@ -16,10 +16,11 @@
 
     <div class="toggle">
       <v-btn-toggle
-        v-model="toggle"
+        :model-value="toggle"
         class="toggle-request"
         color="rgb(var(--v-theme-Primary-Navy-Blue))"
         mandatory
+        @update:model-value="onToggleChange"
       >
         <v-btn :class="{ active: toggle === 0 }" class="ml-0"
           >בקשות שניתן להגיש</v-btn
@@ -50,7 +51,10 @@
         אין בקשות שהוגשו כרגע
       </p>
       <div class="overflow-lobby-details">
-        <RequestDetailsList :requests="requestsSubmitted" />
+        <RequestDetailsList
+          ref="detailsListRef"
+          :requests="requestsSubmitted"
+        />
       </div>
     </div>
   </div>
@@ -76,6 +80,20 @@ const emit = defineEmits<{ (click: 'click-request', id: any): void }>()
 const toggle = ref(0)
 const identity = ref('')
 const requestsSubmitted = ref<RequestDetails[]>([])
+const detailsListRef = ref<{ confirmLeave: () => Promise<boolean> } | null>(
+  null,
+)
+
+const onToggleChange = async (newToggle: number) => {
+  if (newToggle === toggle.value) return
+
+  if (newToggle === 0 && detailsListRef.value) {
+    const proceed = await detailsListRef.value.confirmLeave()
+    if (!proceed) return
+  }
+
+  toggle.value = newToggle
+}
 
 const click = async (id: any) => {
   identity.value = id
